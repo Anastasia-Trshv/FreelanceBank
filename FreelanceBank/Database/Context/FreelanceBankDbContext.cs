@@ -5,15 +5,20 @@ namespace FreelanceBank.Database.Context
 {
     public class FreelanceBankDbContext : DbContext
     {
+        private readonly string _string;
         public FreelanceBankDbContext()
         {
+        }
+        public FreelanceBankDbContext(IConfiguration config)
+        {
+            _string = config["PostgreSQL : ConnectionString"];
         }
 
         public virtual DbSet<UserWallet> UserWallets { get; set; }
         public virtual DbSet<FreelanceWallet> FreelanceWallets { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=FreelanceBankDb;Username=developer;Password=developer");
+        => optionsBuilder.UseNpgsql(_string);
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
