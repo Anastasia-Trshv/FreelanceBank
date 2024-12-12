@@ -40,6 +40,10 @@ namespace FreelanceBank.Database.Repository
         public async Task<UserWalletModel> GetUserWallet(long id)
         {
             var wallet = await _context.UserWallets.FindAsync(id);
+            if(wallet == null)
+            {
+                return new UserWalletModel();
+            }
             return Convert(wallet);
         }
 
@@ -50,7 +54,7 @@ namespace FreelanceBank.Database.Repository
 
             customerWallet.FreezeBalance -= amount;
             workerWallet.Balance += amount * _commision;//комиссия 
-            var freelanceWallet = await _context.FreelanceWallets.FindAsync(1);
+            var freelanceWallet = await _context.FreelanceWallets.FindAsync(1L);
             freelanceWallet.Balance += amount * (1 - _commision);
 
             await _context.SaveChangesAsync();

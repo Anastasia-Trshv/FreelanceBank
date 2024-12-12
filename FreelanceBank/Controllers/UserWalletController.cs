@@ -18,7 +18,10 @@ namespace FreelanceBank.Controllers
         public async Task<ActionResult<UserWalletResponse>> GetUserWallet(long id)
         {
             var wallet = await _userWalletService.GetUserWallet(id);
-
+            if (wallet.Id == 0) 
+            {
+                return NotFound();
+            }
             return Ok(Convert(wallet));
         }
 
