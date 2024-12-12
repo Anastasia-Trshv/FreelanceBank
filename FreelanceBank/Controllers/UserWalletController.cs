@@ -68,6 +68,7 @@ namespace FreelanceBank.Controllers
             return Ok(Convert(wallet));
         }
 
+        [NonAction]
         public UserWalletResponse Convert(UserWalletModel model)
         {
             return new UserWalletResponse(model.Id, model.Balance, model.FreezeBalance);

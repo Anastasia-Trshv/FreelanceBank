@@ -16,6 +16,7 @@ namespace FreelanceBank.Database.Repository
         public async Task<UserWalletModel> CreateWallet(long id)
         {
             UserWallet userWallet = new UserWallet { Id=id};
+            _context.UserWallets.Add(userWallet);
             await _context.SaveChangesAsync();
             return Convert(userWallet);
         }
