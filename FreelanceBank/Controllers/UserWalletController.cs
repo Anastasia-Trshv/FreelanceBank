@@ -14,6 +14,12 @@ namespace FreelanceBank.Controllers
         {
             _userWalletService = walletService;
         }
+
+        /// <summary>
+        /// Получение кошелька пользователя
+        /// </summary>
+        /// <response code="200">Успешно</response>
+        /// <response code="404">Кошелек не существует</response>
         [HttpGet]
         public async Task<ActionResult<UserWalletResponse>> GetUserWallet(long id)
         {
@@ -25,6 +31,9 @@ namespace FreelanceBank.Controllers
             return Ok(Convert(wallet));
         }
 
+        /// <summary>
+        /// Пополнение счета
+        /// </summary>
         [HttpPut]
         public async Task<ActionResult> ReplenishAccount(long id, decimal money)
         {
@@ -32,6 +41,11 @@ namespace FreelanceBank.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Заморозка средств
+        /// </summary>
+        /// <response code="200">Сумма заморожена</response>
+        /// <response code="400">Желаемая сумма заморозки превышает сумму на счету</response>
         [HttpPut]
         public async Task<ActionResult> FreezeMoney(long id, decimal money)
         {
@@ -45,12 +59,22 @@ namespace FreelanceBank.Controllers
                 return BadRequest("Недостаточно средств");
             }
         }
+
+        /// <summary>
+        /// Перевести замороженную сумму с кошелька заказчика на кошелек исполнителя
+        /// </summary>
         [HttpPut]
         public async Task<ActionResult> PayForService(long authorId, long workerId, decimal amount)
         {
             await _userWalletService.PayForService(authorId, workerId, amount);
             return Ok();
         }
+
+        /// <summary>
+        /// Снять средства со счета
+        /// </summary>
+        /// <response code="200">Успешно</response>
+        /// <response code="400">На счету недостаточно средств либо они заморожены</response>
         [HttpPut]
         public async Task<ActionResult> WithdrawFromAccount(long id, decimal amount)
         {
@@ -64,6 +88,9 @@ namespace FreelanceBank.Controllers
                 return BadRequest("На счету недостаточно средств либо они заморожены");
             }
         }
+        /// <summary>
+        /// Создание кошелька
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<UserWalletResponse>> CreateWallet(long id)
         {
