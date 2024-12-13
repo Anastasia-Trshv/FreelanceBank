@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text;
+using FreelanceBank.RabbitMq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,8 +47,11 @@ builder.Services.AddSwaggerGen(opt =>
     });
 });
 builder.Services.AddDbContext<FreelanceBankDbContext>();
-    builder.Services.AddTransient<IUserWalletRepository, UserWalletRepository>();
-    builder.Services.AddTransient<IUserWalletService, UserWalletService>();
+builder.Services.AddTransient<IUserWalletRepository, UserWalletRepository>();
+builder.Services.AddTransient<IUserWalletService, UserWalletService>();
+builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
+builder.Services.AddHostedService<MessageQueueConsumer>();
+
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
