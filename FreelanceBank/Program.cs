@@ -1,5 +1,3 @@
-using FreelanceBank.Abstractions.Repositories;
-using FreelanceBank.Abstractions.Services;
 using FreelanceBank.Database.Context;
 using FreelanceBank.Database.Repository;
 using FreelanceBank.Services;
@@ -9,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Text;
 using FreelanceBank.RabbitMq;
+using FreelanceBank.Services.Interfaces;
+using FreelanceBank.Database.Repository.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,9 +48,10 @@ builder.Services.AddSwaggerGen(opt =>
 });
 builder.Services.AddDbContext<FreelanceBankDbContext>();
 builder.Services.AddTransient<IUserWalletRepository, UserWalletRepository>();
-builder.Services.AddTransient<IUserWalletService, UserWalletService>();
+builder.Services.AddTransient<IUserWalletService, UserWalletService>(); 
 builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 builder.Services.AddHostedService<MessageQueueConsumer>();
+builder.Services.AddSingleton<RabbitMqMediator, RabbitMqMediator>();
 
 builder.Services.AddAuthentication(x =>
 {

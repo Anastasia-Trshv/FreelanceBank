@@ -1,4 +1,4 @@
-﻿namespace FreelanceBank.Contracts
+﻿namespace FreelanceBank.Contracts.Responses
 {
     public record UserWalletResponse
     (

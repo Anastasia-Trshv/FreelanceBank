@@ -1,6 +1,7 @@
-﻿using FreelanceBank.Abstractions.Services;
-using FreelanceBank.Contracts;
+﻿using FreelanceBank.Contracts.Responses;
 using FreelanceBank.Models;
+using FreelanceBank.Services.Contracts;
+using FreelanceBank.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreelanceBank.Controllers
@@ -21,9 +22,9 @@ namespace FreelanceBank.Controllers
         /// <response code="200">Успешно</response>
         /// <response code="404">Кошелек не существует</response>
         [HttpGet]
-        public async Task<ActionResult<UserWalletResponse>> GetUserWallet(long id)
+        public async Task<ActionResult<UserWalletResponse>> GetUserWallet(UserWalletResponse resp)
         {
-            var wallet = await _userWalletService.GetUserWallet(id);
+            var wallet = await _userWalletService.GetUserWallet(resp.Id);
             if (wallet.Id == 0) 
             {
                 return NotFound();
@@ -61,12 +62,32 @@ namespace FreelanceBank.Controllers
         }
 
         /// <summary>
+        /// Разморозка средств
+        /// </summary>
+        /// <response code="200">Сумма разморожена</response>
+        /// <response code="400">Желаемая сумма разморозки превышает замороженную сумму на счету</response>
+        [HttpPut]
+        public async Task<ActionResult> UnfreezeMoney(long id, decimal money)
+        {
+            var result = await _userWalletService.UnfreezeMoney(id, money);
+            if (result)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("Запрошенная для разморозки сумма превышает замороженную сумму кошелька");
+            }
+        }
+
+        /// <summary>
         /// Перевести замороженную сумму с кошелька заказчика на кошелек исполнителя
         /// </summary>
         [HttpPut]
         public async Task<ActionResult> PayForService(long authorId, long workerId, decimal amount)
         {
-            await _userWalletService.PayForService(authorId, workerId, amount);
+            PayForServiceContract payForServiceContract = new PayForServiceContract(authorId, workerId, amount);
+            await _userWalletService.PayForService(payForServiceContract);
             return Ok();
         }
 

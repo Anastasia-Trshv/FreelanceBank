@@ -1,6 +1,6 @@
-﻿using FreelanceBank.Abstractions.Repositories;
-using FreelanceBank.Database.Context;
+﻿using FreelanceBank.Database.Context;
 using FreelanceBank.Database.Entities;
+using FreelanceBank.Database.Repository.Interfaces;
 using FreelanceBank.Models;
 
 namespace FreelanceBank.Database.Repository
@@ -37,6 +37,21 @@ namespace FreelanceBank.Database.Repository
 
         }
 
+        public async Task<bool> UnfreezeMoney(long id, decimal money)
+        {
+            var wallet = await _context.UserWallets.FindAsync(id);
+            if (wallet.FreezeBalance >= money)
+            {
+                wallet.FreezeBalance -= money;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public async Task<UserWalletModel> GetUserWallet(long id)
         {
             var wallet = await _context.UserWallets.FindAsync(id);
@@ -67,6 +82,8 @@ namespace FreelanceBank.Database.Repository
             await _context.SaveChangesAsync();
             
         }
+
+        
 
         public async Task<bool> WithdrawFromAccount(long id, decimal amount)
         {

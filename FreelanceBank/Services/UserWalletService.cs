@@ -1,15 +1,30 @@
-﻿using FreelanceBank.Abstractions.Repositories;
-using FreelanceBank.Abstractions.Services;
+﻿using FreelanceBank.Database.Repository.Interfaces;
 using FreelanceBank.Models;
+using FreelanceBank.RabbitMq;
+using FreelanceBank.Services.Contracts;
+using FreelanceBank.Services.Interfaces;
 
 namespace FreelanceBank.Services
 {
     public class UserWalletService : IUserWalletService
     {
         private readonly IUserWalletRepository _userWalletRepository;
-        public UserWalletService(IUserWalletRepository walletRepository) 
+        private readonly RabbitMqMediator _mediator;
+        public UserWalletService(IUserWalletRepository walletRepository, RabbitMqMediator mqMediator) 
         {
             _userWalletRepository = walletRepository;
+            _mediator = mqMediator;
+        }
+
+        public void SubscribeToCreateWalletEvent()
+        {
+            _mediator.CreateWalletEvent += HandleCreateWalletEvent;
+        }
+
+        private async void HandleCreateWalletEvent(object sender, string message)
+        {
+            var userId = long.Parse(message);
+            await CreateWallet(userId);
         }
         public async Task<UserWalletModel> CreateWallet(long id)
         {
@@ -21,14 +36,19 @@ namespace FreelanceBank.Services
            return await _userWalletRepository.FreezeMoney(id, money);
         }
 
+        public async Task<bool> UnfreezeMoney(long id, decimal money)
+        {
+            return await _userWalletRepository.UnfreezeMoney(id, money);
+        }
+
         public async Task<UserWalletModel> GetUserWallet(long id)
         {
             return await _userWalletRepository.GetUserWallet(id);
         }
 
-        public async Task PayForService(long authorId, long workerId, decimal amount)
+        public async Task PayForService(PayForServiceContract contract)
         {
-            await _userWalletRepository.PayForService(authorId, workerId, amount);
+            await _userWalletRepository.PayForService(contract.AuthorId, contract.WorkerId, contract.Amount);
         }
 
         public async Task ReplenishAccount(long id, decimal money)
@@ -40,5 +60,7 @@ namespace FreelanceBank.Services
         {
             return await _userWalletRepository.WithdrawFromAccount(id, amount);
         }
+
+        
     }
 }
