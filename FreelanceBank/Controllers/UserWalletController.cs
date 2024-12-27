@@ -1,4 +1,5 @@
-﻿using FreelanceBank.Contracts.Responses;
+﻿using FreelanceBank.Contracts.Requests;
+using FreelanceBank.Contracts.Responses;
 using FreelanceBank.Models;
 using FreelanceBank.Services.Contracts;
 using FreelanceBank.Services.Interfaces;
@@ -36,9 +37,9 @@ namespace FreelanceBank.Controllers
         /// Пополнение счета
         /// </summary>
         [HttpPut]
-        public async Task<ActionResult> ReplenishAccount(long id, decimal money)
+        public async Task<ActionResult> ReplenishAccount(ReplenishAccountRequest request)
         {
-            await _userWalletService.ReplenishAccount(id, money);
+            await _userWalletService.ReplenishAccount(request.Id, request.Money);
             return Ok();
         }
 
@@ -48,9 +49,9 @@ namespace FreelanceBank.Controllers
         /// <response code="200">Сумма заморожена</response>
         /// <response code="400">Желаемая сумма заморозки превышает сумму на счету</response>
         [HttpPut]
-        public async Task<ActionResult> FreezeMoney(long id, decimal money)
+        public async Task<ActionResult> FreezeMoney(FreezeMoneyRequest request)
         {
-            var result = await _userWalletService.FreezeMoney(id, money);
+            var result = await _userWalletService.FreezeMoney(request.Id, request.Money);
             if (result)
             {
                 return Ok();
@@ -67,9 +68,9 @@ namespace FreelanceBank.Controllers
         /// <response code="200">Сумма разморожена</response>
         /// <response code="400">Желаемая сумма разморозки превышает замороженную сумму на счету</response>
         [HttpPut]
-        public async Task<ActionResult> UnfreezeMoney(long id, decimal money)
+        public async Task<ActionResult> UnfreezeMoney(UnfreezeMoneyRequest request)
         {
-            var result = await _userWalletService.UnfreezeMoney(id, money);
+            var result = await _userWalletService.UnfreezeMoney(request.Id, request.Money);
             if (result)
             {
                 return Ok();
@@ -84,9 +85,9 @@ namespace FreelanceBank.Controllers
         /// Перевести замороженную сумму с кошелька заказчика на кошелек исполнителя
         /// </summary>
         [HttpPut]
-        public async Task<ActionResult> PayForService(long authorId, long workerId, decimal amount)
+        public async Task<ActionResult> PayForService(PayForServiceRequest request)
         {
-            PayForServiceContract payForServiceContract = new PayForServiceContract(authorId, workerId, amount);
+            PayForServiceContract payForServiceContract = new PayForServiceContract(request.AuthorId, request.WorkerId, request.Amount);
             await _userWalletService.PayForService(payForServiceContract);
             return Ok();
         }
@@ -97,9 +98,9 @@ namespace FreelanceBank.Controllers
         /// <response code="200">Успешно</response>
         /// <response code="400">На счету недостаточно средств либо они заморожены</response>
         [HttpPut]
-        public async Task<ActionResult> WithdrawFromAccount(long id, decimal amount)
+        public async Task<ActionResult> WithdrawFromAccount(WirhdrawFromAccountRequest request)
         {
-            var result = await _userWalletService.WithdrawFromAccount(id, amount);
+            var result = await _userWalletService.WithdrawFromAccount(request.Id, request.Amount);
             if (result)
             {
                 return Ok();
@@ -113,9 +114,9 @@ namespace FreelanceBank.Controllers
         /// Создание кошелька
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<UserWalletResponse>> CreateWallet(long id)
+        public async Task<ActionResult<UserWalletResponse>> CreateWallet(CreateWalletRequest request)
         {
-            var wallet = await _userWalletService.CreateWallet(id); 
+            var wallet = await _userWalletService.CreateWallet(request.Id); 
             return Ok(Convert(wallet));
         }
 
