@@ -2,7 +2,7 @@
 {
     public interface IRabbitMqService
     {
-        void SubscribeToCreateUserQueue();
-        void SubscribeToCreateTaskQueue();
+        Task SubscribeToCreateUserQueue();
+        Task SubscribeToCreateTaskQueue();
     }
 }

@@ -7,16 +7,21 @@ namespace FreelanceBank.RabbitMq
 {
     public class RabbitMqService : IRabbitMqService
     {
-        private readonly RabbitMqMediator _mediator;
+        //private readonly RabbitMqMediator _mediator;
 
-        public RabbitMqService(RabbitMqMediator mediator)
+        //public RabbitMqService(RabbitMqMediator mediator)
+        //{
+        //    _mediator = mediator;
+        //}
+        private readonly IConfiguration _config;
+        public RabbitMqService(IConfiguration configuration)
         {
-            _mediator = mediator;
+            _config = configuration;
         }
 
-        public async void SubscribeToCreateUserQueue()
+        public async Task SubscribeToCreateUserQueue()
         {
-            var factory = new ConnectionFactory() { Uri = new Uri("amqps://lzpoyxzx:zHSe2yBq-j1eaCjF8S6ztpMg0Y_D2xg_@dog.lmq.cloudamqp.com/lzpoyxzx") };
+            var factory = new ConnectionFactory() { Uri = new Uri(_config["RabbitMQ: ConnectionString"]) };
             using var connection = await factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
 
@@ -31,20 +36,23 @@ namespace FreelanceBank.RabbitMq
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 Console.WriteLine($" [x] Received {message}");
-                _mediator.Notify(message);
+                //_mediator.Notify(message);
 
 
                 return Task.CompletedTask;
-                
+
             };
 
-            await channel.BasicConsumeAsync("CreateUserQueue", autoAck: true, consumer: consumer);
+            while (true)
+            {
+                await channel.BasicConsumeAsync("CreateUserQueue", false, consumer);
 
+            }
         }
 
-        public async void SubscribeToCreateTaskQueue()
+        public async Task SubscribeToCreateTaskQueue()
         {
-            var factory = new ConnectionFactory() { Uri = new Uri("amqps://lzpoyxzx:zHSe2yBq-j1eaCjF8S6ztpMg0Y_D2xg_@dog.lmq.cloudamqp.com/lzpoyxzx") };
+            var factory = new ConnectionFactory() { Uri = new Uri(_config["RabbitMQ: ConnectionString"]) };
             using var connection = await factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
 

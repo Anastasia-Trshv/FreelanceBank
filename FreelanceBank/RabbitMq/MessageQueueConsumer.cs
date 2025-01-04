@@ -16,11 +16,8 @@ namespace FreelanceBank.RabbitMq
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            
-                _rabbitMqService.SubscribeToCreateUserQueue();
-                _rabbitMqService.SubscribeToCreateTaskQueue();
-            
-            
+            await _rabbitMqService.SubscribeToCreateUserQueue();
+            await _rabbitMqService.SubscribeToCreateTaskQueue();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
