@@ -9,17 +9,11 @@ namespace FreelanceBank.Services
     public class UserWalletService : IUserWalletService
     {
         private readonly IUserWalletRepository _userWalletRepository;
-        private readonly RabbitMqMediator _mediator;
-        public UserWalletService(IUserWalletRepository walletRepository, RabbitMqMediator mqMediator) 
+        public UserWalletService(IUserWalletRepository walletRepository) 
         {
             _userWalletRepository = walletRepository;
-            _mediator = mqMediator;
         }
 
-        public void SubscribeToCreateWalletEvent()
-        {
-            _mediator.CreateWalletEvent += HandleCreateWalletEvent;
-        }
 
         private async void HandleCreateWalletEvent(object sender, string message)
         {

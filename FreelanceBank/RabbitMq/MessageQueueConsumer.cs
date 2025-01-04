@@ -11,7 +11,7 @@ namespace FreelanceBank.RabbitMq
 {
     public abstract class MessageQueueConsumer<TMessage> : BackgroundService
     {
-        private readonly IRabbitMqService _rabbitMqService;
+        
         private readonly IServiceProvider _services;
         private readonly IConfiguration _config;
         private RabbitMQ.Client.IModel _channel;
@@ -19,10 +19,10 @@ namespace FreelanceBank.RabbitMq
         protected abstract string QueueName { get; }
 
 
-        public MessageQueueConsumer( IServiceProvider serviceProvider, IRabbitMqService rabbitMqService)
+        public MessageQueueConsumer( IServiceProvider serviceProvider, IConfiguration config)
         {
             _services = serviceProvider;
-            _rabbitMqService = rabbitMqService;
+            _config = config;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
