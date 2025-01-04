@@ -49,9 +49,9 @@ builder.Services.AddSwaggerGen(opt =>
 builder.Services.AddDbContext<FreelanceBankDbContext>();
 builder.Services.AddTransient<IUserWalletRepository, UserWalletRepository>();
 builder.Services.AddTransient<IUserWalletService, UserWalletService>(); 
-builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
+//builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 builder.Services.AddSingleton<RabbitMqMediator, RabbitMqMediator>();
-builder.Services.AddHostedService<MessageQueueConsumer>();
+//builder.Services.AddHostedService<MessageQueueConsumer>();
 
 builder.Services.AddAuthentication(x =>
 {
