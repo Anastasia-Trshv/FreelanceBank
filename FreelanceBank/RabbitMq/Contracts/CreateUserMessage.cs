@@ -1,6 +1,6 @@
 ﻿namespace FreelanceBank.RabbitMq.Contracts
 {
-    public record CreateUserQueueMessage
+    public record CreateUserMessage
     {
         int id;
     }

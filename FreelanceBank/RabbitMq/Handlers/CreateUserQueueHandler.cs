@@ -1,7 +1,7 @@
 ﻿using FreelanceBank.Services;
 using FreelanceBank.Services.Interfaces;
 
-namespace FreelanceBank.RabbitMq
+namespace FreelanceBank.RabbitMq.Handlers
 {
     public class CreateUserQueueHandler : MessageQueueConsumer<int>
     {

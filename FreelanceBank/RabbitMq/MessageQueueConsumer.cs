@@ -1,17 +1,13 @@
-﻿
-using FreelanceBank.Services;
-using Microsoft.EntityFrameworkCore.Metadata;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Channels;
 
 namespace FreelanceBank.RabbitMq
 {
     public abstract class MessageQueueConsumer<TMessage> : BackgroundService
     {
-        
+
         private readonly IServiceProvider _services;
         private readonly IConfiguration _config;
         private RabbitMQ.Client.IModel _channel;
@@ -19,7 +15,7 @@ namespace FreelanceBank.RabbitMq
         protected abstract string QueueName { get; }
 
 
-        public MessageQueueConsumer( IServiceProvider serviceProvider, IConfiguration config)
+        public MessageQueueConsumer(IServiceProvider serviceProvider, IConfiguration config)
         {
             _services = serviceProvider;
             _config = config;
@@ -46,25 +42,6 @@ namespace FreelanceBank.RabbitMq
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //while (!stoppingToken.IsCancellationRequested)
-            //{
-            //    using (IServiceScope _scope = _services.CreateScope())
-            //    {
-            //        IServiceProvider _provider = _scope.ServiceProvider;
-            //        try
-            //        {
-            //            await _rabbitMqService.SubscribeToCreateUserQueue();
-            //            await _rabbitMqService.SubscribeToCreateTaskQueue();
-
-            //        }
-            //        finally
-            //        {
-
-            //        }
-            //    }
-
-            //}
-
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (bc, ea) =>
             {
@@ -73,7 +50,7 @@ namespace FreelanceBank.RabbitMq
                 await Task.Run(async () => await Handle(messageData));
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
-            
+
             _channel.BasicConsume(queue: QueueName, autoAck: false, consumer: consumer);
             await Task.CompletedTask;
         }
