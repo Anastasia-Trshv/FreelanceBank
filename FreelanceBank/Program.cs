@@ -52,6 +52,7 @@ builder.Services.AddTransient<IUserWalletRepository, UserWalletRepository>();
 builder.Services.AddTransient<IUserWalletService, UserWalletService>(); 
 builder.Services.AddHostedService<CreateUserQueueHandler>();
 builder.Services.AddHostedService<CreateTaskQueueHandler>();
+builder.Services.AddHostedService<FinishTaskQueueHandler>();
 builder.Services.AddTransient<ILoggerProvider, LoggerProvider>(p => new LoggerProvider(builder.Configuration["Redis:ConnectionString"]));
 
 builder.Services.AddAuthentication(x =>

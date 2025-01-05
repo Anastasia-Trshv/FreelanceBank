@@ -27,7 +27,7 @@ namespace FreelanceBank.RabbitMq.Handlers
                 var contract = new PayForServiceContract(messageData.AuthorId, messageData.WorkerId, messageData.Price);
                 await userWalletService.PayForService(contract);
 
-                Console.WriteLine("Task finished, salary paid");
+                Console.WriteLine($"Task finished, salary ({messageData.Price}) paid to {messageData.WorkerId} from {messageData.AuthorId}");
             }
         }
     }

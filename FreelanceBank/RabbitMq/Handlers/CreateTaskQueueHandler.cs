@@ -23,7 +23,7 @@ namespace FreelanceBank.RabbitMq.Handlers
                 var userWalletService = _provider.GetRequiredService<IUserWalletService>();
 
                 await userWalletService.FreezeMoney(messageData.Id, messageData.Price);
-                Console.WriteLine("Task created, money freezed");
+                Console.WriteLine($"Task created, money ({messageData.Price}) freezed on {messageData.Id} account"); ;
 
             }
         }
