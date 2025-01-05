@@ -9,9 +9,11 @@ namespace FreelanceBank.Services
     public class UserWalletService : IUserWalletService
     {
         private readonly IUserWalletRepository _userWalletRepository;
-        public UserWalletService(IUserWalletRepository walletRepository) 
+        private readonly ILogger<UserWalletService> _logger;
+        public UserWalletService(IUserWalletRepository walletRepository, ILogger<UserWalletService> logger) 
         {
             _userWalletRepository = walletRepository;
+            _logger = logger;
         }
 
 

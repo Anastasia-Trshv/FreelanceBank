@@ -9,6 +9,7 @@ using System.Text;
 using FreelanceBank.Services.Interfaces;
 using FreelanceBank.Database.Repository.Interfaces;
 using FreelanceBank.RabbitMq.Handlers;
+using FreelanceBank.Services.Logger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,7 @@ builder.Services.AddTransient<IUserWalletRepository, UserWalletRepository>();
 builder.Services.AddTransient<IUserWalletService, UserWalletService>(); 
 builder.Services.AddHostedService<CreateUserQueueHandler>();
 builder.Services.AddHostedService<CreateTaskQueueHandler>();
+builder.Services.AddTransient<ILoggerProvider, LoggerProvider>(p => new LoggerProvider(builder.Configuration["Redis:ConnectionString"]));
 
 builder.Services.AddAuthentication(x =>
 {
