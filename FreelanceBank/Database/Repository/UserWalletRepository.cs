@@ -63,6 +63,7 @@ namespace FreelanceBank.Database.Repository
             var wallet = await _context.UserWallets.FindAsync(id);
             if(wallet == null)
             {
+                _logger.LogWarning($"Trying to find a non-existent wallet {DateTime.Now.ToString()}");
                 return new UserWalletModel();
             }
             return Convert(wallet);
